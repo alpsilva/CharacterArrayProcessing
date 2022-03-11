@@ -6,6 +6,7 @@ TODO
 
 # Authors
 alps2 - André Luiz Pereira da Silva (alps2@cin.ufpe.br)
+
 lvas - Lucas Vinícius Araújo da Silva (lvas@cin.ufpe.br)
 
 # O que é essa ferramenta?
