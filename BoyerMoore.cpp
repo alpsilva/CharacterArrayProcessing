@@ -54,8 +54,10 @@ void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], i
     }
 }
 
-void searchBoyerMoore(string pattern, string text){
-    //Test
+int searchBoyerMoore(string pattern, string text){
+    
+    int totalOccurrences = 0;
+
     int patternSize = pattern.size();
     int textSize = text.size();
 
@@ -78,7 +80,10 @@ void searchBoyerMoore(string pattern, string text){
 
         // If the patternIndex became less than 0, then a match occurred in the current window.
         if (patternIndex < 0){
+            // TODO: Instead of printing this position, just mark the line as having an occurrence and print it after.
             cout << "pattern occurs at position = " << windowIndex << endl;
+
+            totalOccurrences += 1;
 
             int possibleIndexJump = windowIndex + patternSize;
             // Necessary check to avoid out of bounds.
@@ -101,6 +106,8 @@ void searchBoyerMoore(string pattern, string text){
         }
     }
 
+    return totalOccurrences;
+
 }
 
 // TODO: Instead of printing the position of the text where the pattern occurred,
@@ -121,6 +128,7 @@ int main(int argc, char *argv[]){
 
     string text = readStringFromFile(argv[2]);
 
-    searchBoyerMoore(pattern, text);
+    int totalOccurrences = searchBoyerMoore(pattern, text);
+    cout << "Total Occurrences of the supplied pattern in the text: " << totalOccurrences << endl;
     
 }
