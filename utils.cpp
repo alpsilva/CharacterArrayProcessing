@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// TODO: Create a function that reads the searchable text and separate it in lines.
+
 string readStringFromFile(const char* fileName)
 {
     std::ifstream in(fileName, std::ios::in | std::ios::binary);

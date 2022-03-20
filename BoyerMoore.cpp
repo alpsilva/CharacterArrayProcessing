@@ -103,10 +103,12 @@ void searchBoyerMoore(string pattern, string text){
 
 }
 
-// TODO make this function accept the expected format.
-int main(){
+// TODO: Instead of printing the position of the text where the pattern occurred,
+// Print the whole line where it occurred (only one time, even with multiple occurrences in the same line).
+// Also, return the total times it occurred
+
+int main(int argc, char *argv[]){
     
-    /*
     string pattern = argv[1];
     uint patternSize = pattern.length();
     if(patternSize == 0){
@@ -118,19 +120,7 @@ int main(){
     }
 
     string text = readStringFromFile(argv[2]);
-    */
 
-    string text = "AABCDEABCDABABCDAABBCCDDEE";
-    string pattern_ABCD = "ABCD";
-    string pattern_AA = "AA";
-    string pattern_AABBCCDDEE = "AABBCCDDEE";
-
-    cout << "Text: "<< text << endl;
-    cout << "pattern \"ABCD\":" << endl;
-    searchBoyerMoore(pattern_ABCD, text);
-    cout << "pattern \"AA\":" << endl;
-    searchBoyerMoore(pattern_AA, text);
-    cout << "pattern \"AABBCCDDEE\":" << endl;
-    searchBoyerMoore(pattern_AABBCCDDEE, text);
-
+    searchBoyerMoore(pattern, text);
+    
 }
