@@ -23,14 +23,48 @@ void preProcessBadCharacter(string pattern, int patternSize, int badChar[]){
     }
 }
 
+void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], int borderPosition[]){
+
+    for (int i = 0; i < patternSize; i++){
+        goodSuffixes[i] = 0;
+    }
+
+    for (int i = patternSize, j = patternSize + 1; i > 0; i--, j--){
+        borderPosition[i] = j;
+        while (j <= patternSize && pattern[i-1] != pattern[j-1]){
+            if (goodSuffixes[j] == 0){
+                goodSuffixes[j] = j - i;
+            }
+            j = borderPosition[j];
+        }
+    }
+
+    int j = borderPosition[0];
+    for (int i = 0; i <= patternSize; i++){
+        // Set the border position of the first character of the pattern
+        // to all indices in goodSuffixes having goodSuffixes[i] = 0
+        if (goodSuffixes[i] == 0){
+            goodSuffixes[i] = j;
+        }
+        // If the suffix becomes too short for the borderPosition of the first character,
+        // use the position of the next widest border.
+        if (i == j){
+            j = borderPosition[j];
+        }
+    }
+}
+
 void searchBoyerMoore(string pattern, string text){
     //Test
     int patternSize = pattern.size();
     int textSize = text.size();
 
     int badChar[ASCII];
+    int goodSuffixes[patternSize];
+    int borderPosition[patternSize];
 
     preProcessBadCharacter(pattern, patternSize, badChar);
+    preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
 
     int windowIndex = 0;
 
@@ -59,9 +93,11 @@ void searchBoyerMoore(string pattern, string text){
         } else {
             char c = text[windowIndex + patternIndex];
             int indexJump = patternIndex - badChar[(int) c];
+            int goodSuffixJump = goodSuffixes[patternIndex];
             // If the last occurrence of the bad character is on the right of the current character, it will cause a negative jump.
             // Because of this, we take the max between the jump and 1.
-            windowIndex += max(1, indexJump);
+            // Plus, we use both heuristics to choose the max possible jump
+            windowIndex += max(goodSuffixJump, max(1, indexJump));
         }
     }
 
