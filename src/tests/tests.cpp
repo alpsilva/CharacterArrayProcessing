@@ -1,4 +1,4 @@
-#include <BoyerMoore.cpp>
+#include "../BoyerMoore.cpp"
 
 using namespace std;
 
