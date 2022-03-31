@@ -15,7 +15,7 @@ void fillCharMask(uint64_t charMask[ASCII])
     }
 }
 
-void preProcess(string& prefix, uint prefixLen, uint64_t charMask[ASCII])
+void preProcess(const string& prefix, uint prefixLen, uint64_t charMask[ASCII])
 {
     fillCharMask(charMask);
 
@@ -25,33 +25,28 @@ void preProcess(string& prefix, uint prefixLen, uint64_t charMask[ASCII])
     }
 }
 
-void stringSearch(uint mostSignificantBit, string& text, uint64_t charMask[ASCII])
+void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII])
 {
     uint64_t mask = UINT64_MAX;
     uint64_t count = 0;
 
-    stringstream ss(text);
-    string textByLine;
-
-    uint64_t lineCount = 0;
-    while(getline(ss, textByLine, '\n'))
+    uint64_t vectorLength = text.size();
+    uint64_t bitMaskMSB = 1 << mostSignificantBit;
+    
+    for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
     {
-        lineCount++;
         bool found = false;
-        const uint textLen = textByLine.length();
+        const uint textLen = text[lineCount].length();
         for(uint64_t i = 0; i < textLen; i++)
         {
-            mask = (mask << 1) | charMask[textByLine[i]];
-            if(!(mask & (1 << mostSignificantBit )))
+            mask = (mask << 1) | charMask[text[lineCount][i]];
+            if(!(mask & bitMaskMSB))
             {
                 count++;
                 found = true;
             }
         }
-        if(found)
-        {
-            cout << "found ocurrence at line: " << lineCount << endl;
-        }
+
     }
     
     cout << "number of ocurrences is: " << count << endl;
@@ -67,7 +62,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    string text = readStringFromFile(argv[2]);
+    vector<string> text = readStringFromFile(argv[2]);
     if(prefixLen >= 64)
     {
         cout << "Pattern too long, max length is 64." << endl;
