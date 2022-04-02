@@ -28,11 +28,20 @@ void preProcessCharMask(const string& prefix, uint prefixLen, uint64_t charMask[
 void preProcessErrorMask(uint16_t maxDist, vector<uint64_t>& errorMask)
 {
     errorMask.push_back(UINT64_MAX);
-    for(uint16_t q = 0; q < maxDist; q++)
+    for(uint16_t q = 1; q <= maxDist; q++)
     {
-        errorMask.push_back(errorMask[q] << 1);
+        errorMask.push_back(errorMask[q-1] << 1);
     }
 }
+
+void print_binary(uint64_t number)
+{
+    if (number >> 1) {
+        print_binary(number >> 1);
+    }
+    putc((number & 1) ? '1' : '0', stdout);
+}
+
 
 void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], 
     vector<uint64_t> errorMask, uint16_t maxDist)
@@ -42,7 +51,7 @@ void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t 
 
     uint64_t vectorLength = text.size();
     const uint64_t bitMaskMSB = 1 << mostSignificantBit;
-    
+    uint64_t countLine = 0;
     for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
     {
         bool found = false;
@@ -50,27 +59,29 @@ void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t 
         for(uint64_t i = 0; i < textLen; i++)
         {
             vector<uint64_t> tempErrorMask;
-            tempErrorMask.push_back(UINT64_MAX);
-            for(uint16_t q = 1; q < maxDist; q++)
+            uint64_t temp = (errorMask[0] << 1) | charMask[text[lineCount][i]];
+            tempErrorMask.push_back(temp);
+            for(uint16_t q = 1; q <= maxDist; q++)
             {
-                tempErrorMask[q] = ((errorMask[q] << 1) | charMask[text[lineCount][i]]) & (errorMask[q-1] << 1) 
-                    & (tempErrorMask[q-1] << 1) & tempErrorMask[q-1];
+                temp = ((errorMask[q] << 1) | charMask[text[lineCount][i]]) & (errorMask[q-1] << 1) 
+                    & (tempErrorMask[q-1] << 1) & errorMask[q-1];
+                tempErrorMask.push_back(temp);
             }
-            errorMask = tempErrorMask;
-            mask = (mask << 1) | charMask[text[lineCount][i]];
-            if(!(mask & bitMaskMSB))
+            errorMask.swap(tempErrorMask);
+            if(!(errorMask[maxDist] & bitMaskMSB))
             {
-                count++;
+                //count++;
                 found = true;
             }
         }
         if(found)
         {
-            cout << "found ocurrence at line: " << lineCount << endl;
+            //countLine++;
+            cout << text[lineCount] << endl;
         }
     }
-    
-    cout << "number of ocurrences is: " << count << endl;
+    //cout << countLine << endl;
+    //cout << "number of ocurrences is: " << count << endl;
 }
 
 int main(int argc, char *argv[])
@@ -84,9 +95,9 @@ int main(int argc, char *argv[])
     }
 
     vector<string> text = readStringFromFile(argv[2]);
-    if(prefixLen >= 64)
+    if(prefixLen >= 8)
     {
-        cout << "Pattern too long, max length is 64." << endl;
+        cout << "Pattern too long, this algorithm is most efficient when the pattern is less than 9 characters, in a 64 bit computer. you should use another algorithm" << endl;
     }
 
 
@@ -94,8 +105,9 @@ int main(int argc, char *argv[])
     preProcessCharMask(prefix, prefixLen, charMask);
 
     vector<uint64_t> errorMask;
-    uint16_t maxDist = 2;
+    uint16_t maxDist = 1;
     preProcessErrorMask(maxDist, errorMask);
 
     stringSearch(prefixLen-1, text, charMask, errorMask, maxDist);
 }
+
