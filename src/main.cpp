@@ -1,22 +1,100 @@
+#include <iostream>
+#include <list>
 #include "BoyerMoore.cpp"
-#include "shiftor.cpp"
-
+#include "shiftOr.cpp"
+#include "Sellers.cpp"
 
 using namespace std;
 
+#define VERSION 0.1
+
 int main(int argc, char *argv[]){
+    // TODO: Create the help text.
+    string helpText = "";
+    // Obligatory
+    string pattern = "";
+    string textFile = "";
     
-    string pattern = argv[1];
-    uint patternSize = pattern.length();
-    if(patternSize == 0){
-        cout << "Please provide a pattern." << endl;
-        return 0;
-    } else if (patternSize >= 64){
-        cout << "Pattern too long, max length is 64." << endl;
+    // Optional
+    string eMax = 0;
+    string patternFile = "";
+    string algorithmName = "";
+    bool isCount = false;
+    bool asked_help = false;
+    bool asked_version = false;
+
+    if (argc < 3) {
+        cout << "You have to provide at least a pattern and a text file." << endl;
         return 0;
     }
 
-    string text = readStringFromFile(argv[2]);
+    for (int i = 1; i < argc; i++){
+        if (i == argc - 2){
+            // TODO: This may break the code if no pattern is passed
+            pattern = argv[i];
+            textFile = argv[i+1];
+        } else {
+            string arg = argv[i];
+            if (arg == "-e" || arg == "--edit"){
+                eMax = stoi(argv[i++]);
+            } else if (arg == "-p" || arg == "--pattern") {
+                patternFile = argv[i++];
+            } else if (arg == "-a" || arg == "--algorithm") {
+                algorithmName = argv[i++];
+            } else if (arg == "-c" || arg == "--count") {
+                isCount = true;
+            } else if (arg == "-h" || arg == "--help") {
+                isCount = true;
+            } else if (arg == "-v" || arg == "--version") {
+                isCount = true;
+            } else {
+                cout << "Option does not exist: " << arg << endl;
+                return 0;
+            }
+        }
+
+
+    }
+
+    if (asked_help){
+        cout << helpText << endl;
+    }
+    if (asked_version){
+        cout << "PMT by André Luiz, Lucas Vinicius.\nVersion: " << VERSION << endl;
+    }
+    list<string> patternList;
+    if (patternFile.size() > 0){
+        patternList = readStringFromFile(patternFile);
+    } else {
+        patternList.push_back(pattern);
+    }
+    list<string> textList = readStringFromFile(textFile);
+
+    if (algorithmName.size() > 0){
+        // use the given algo
+    } else {
+        // Choose the best algo
+        if (eMax > 0){
+            // Aproximate matching
+            for (string p : patternList){
+                 for (string t : textList){
+                     
+                 }
+            }
+        } else {
+            // Exact matching
+            for (string p : patternList){
+                 for (string t : textList){
+                     if (p.size() <= 8){
+                         // Use ShiftOr
+                     } else {
+                         // user BoyerMoore
+                     }
+                 }
+            }
+        }
+    }
+
 
     /*
     Todo:
