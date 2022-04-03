@@ -1,7 +1,6 @@
-#define ASCII 128
-
 #include <iostream>
-
+#include <vector>
+#define ASCII 128
 using namespace std;
 
 void preProcessBadCharacter(string pattern, int patternSize, int badChar[]){

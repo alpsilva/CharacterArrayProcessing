@@ -1,7 +1,8 @@
-#include <iostream>
+#include "utils.cpp"
 #include "BoyerMoore.cpp"
-#include "shiftOr.cpp"
+#include "shiftor.cpp"
 #include "Sellers.cpp"
+#include "wuManber.cpp"
 
 using namespace std;
 
@@ -14,10 +15,10 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
     for (char c : algorithmName){
         treatedAlgorithmName.push_back(tolower(c));
     }
-
+    cout << treatedAlgorithmName << endl;
     if(treatedAlgorithmName == "shiftor"){
         for(string pattern: patternList){
-            shiftOr(pattern, textList);
+            shiftOr(pattern, textList, isCount);
         }
     }
     else if(treatedAlgorithmName == "sellers"){
@@ -31,7 +32,9 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
         }
     }
     else if(treatedAlgorithmName == "wumanber"){
-
+        for(string pattern: patternList){
+            wuManber(pattern, textList, eMax, isCount);
+        }
     }
     else{
         cout << "please provide one of these algorithms: BoyerMoore, ShiftOr, Sellers, WuManber." << endl;
@@ -42,7 +45,7 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
 void chooseExactAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, bool isCount){
     for (string pattern : patternList){
         if (pattern.size() <= 8){
-            shiftOr(pattern, textList);
+            shiftOr(pattern, textList, isCount);
         } else {
             searchBoyerMoore(pattern, textList, isCount);
         }
@@ -79,20 +82,20 @@ int main(int argc, char *argv[]){
         cout << "You have to provide at least a pattern and a text file." << endl;
         return 0;
     }
-
     for (int i = 1; i < argc; i++){
-        if (i == argc - 2){
+        int test = (argc-2);
+        if (i == (argc - 2)){
             // TODO: This may break the code if no pattern is passed
-            pattern = argv[i];
-            textFile = argv[i+1];
+            pattern = argv[i++];
+            textFile = argv[i++];
         } else {
             string arg = argv[i];
             if (arg == "-e" || arg == "--edit"){
-                eMax = stoi(argv[i++]);
+                eMax = stoi(argv[++i]);
             } else if (arg == "-p" || arg == "--pattern") {
-                patternFile = argv[i++];
+                patternFile = argv[++i];
             } else if (arg == "-a" || arg == "--algorithm") {
-                algorithmName = argv[i++];
+                algorithmName = argv[++i];
             } else if (arg == "-c" || arg == "--count") {
                 isCount = true;
             } else if (arg == "-h" || arg == "--help") {

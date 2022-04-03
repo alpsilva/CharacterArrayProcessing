@@ -2,67 +2,50 @@
 #include <string>
 #include <vector>
 #include <limits>
-#include <sstream>
-#include "utils.cpp"
+#include "charMask.h"
 #define ASCII 128
 using namespace std;
 
-void fillCharMask(uint64_t charMask[ASCII])
-{
-    for(uint16_t i = 0; i < ASCII; i++)
-    {
-        charMask[i] = UINT64_MAX;
-    }
-}
 
-void preProcess(const string& prefix, uint64_t prefixLen, uint64_t charMask[ASCII])
-{
-    fillCharMask(charMask);
-
-    for(uint16_t i = 0; i < prefixLen; i++)
-    {
-        charMask[prefix[i]] &= ~(1 << i); 
-    }
-}
-
-void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII])
-{
+void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], bool isCount){
     uint64_t mask = UINT64_MAX;
     uint64_t count = 0;
 
     uint64_t vectorLength = text.size();
     const uint64_t bitMaskMSB = 1 << mostSignificantBit;
+
+    vector<uint64_t> lineOcurrences;
     
-    for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
-    {
+    for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++){
         bool found = false;
         const uint64_t textLen = text[lineCount].length();
-        for(uint64_t i = 0; i < textLen; i++)
-        {
+        for(uint64_t i = 0; i < textLen; i++){
             mask = (mask << 1) | charMask[text[lineCount][i]];
-            if(!(mask & bitMaskMSB))
-            {
+            if(!(mask & bitMaskMSB)){
                 count++;
                 found = true;
             }
         }
-        if(found)
-        {
-            cout << "found ocurrence at line: " << lineCount << endl;
+        if(found){
+            lineOcurrences.push_back(lineCount);
         }
     }
     
-    cout << "number of ocurrences is: " << count << endl;
+    if(isCount){
+        cout << "number of ocurrences is: " << count << endl;
+    } else {
+        for(uint64_t line: lineOcurrences){
+            cout << text[line] << endl;
+        }
+    }
 }
 
-int shiftOr(const string& prefix, const vector<string>& text)
-{
+void shiftOr(const string& prefix, const vector<string>& text, bool isCount){
     uint64_t prefixLen = prefix.length();
-    if(prefixLen > 8)
-    {
+    if(prefixLen > 8){
         cout << "Pattern too long, max efficient length is 8." << endl;
     }
     uint64_t charMask[ASCII];
-    preProcess(prefix, prefixLen, charMask);
-    stringSearch(prefixLen-1, text, charMask);
+    preProcessCharMask(prefix, prefixLen, charMask);
+    stringSearch(prefixLen-1, text, charMask, isCount);
 }
