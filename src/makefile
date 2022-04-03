@@ -1,4 +1,4 @@
-DIR := bin
+DIR := ../bin
 
 pmt: main.cpp
 	mkdir -p $(DIR)
