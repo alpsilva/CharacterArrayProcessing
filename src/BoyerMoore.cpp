@@ -154,7 +154,7 @@ void searchBoyerMoore(const string& pattern, const vector<string>& textList, boo
         for (string text : textList) {
             totalOccurrences += countBoyerMoore(pattern, text);
         }
-        cout << "The pattern occurred " << totalOccurrences << " times in the given text." << endl;
+        cout << "The pattern " << pattern << " occurred " << totalOccurrences << " times in the given text." << endl;
     } else {
         for (string text : textList) {
             if(checkBoyerMoore(pattern, text)){
