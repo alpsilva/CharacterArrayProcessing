@@ -1,6 +1,7 @@
-
+DIR := bin
 
 pmt: main.cpp
-	g++ main.cpp -O3 -o pmt
+	mkdir -p $(DIR)
+	g++ main.cpp -O3 -o $(DIR)/pmt
 clean:
-	rm pmt
+	rm $(DIR)/pmt
