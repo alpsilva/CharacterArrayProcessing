@@ -50,6 +50,9 @@ void preProcessGoodSuffix(const string& pattern, int patternSize, vector<int> go
             j = borderPosition[j];
         }
     }
+
+    cout << "Got here!" << endl;
+
 }
 
 int countBoyerMoore(const string& pattern, const string& text, int badChar[], vector<int> goodSuffixes, vector<int> borderPosition){
@@ -141,6 +144,8 @@ void searchBoyerMoore(const string& pattern, const vector<string>& textList, boo
 
     preProcessBadCharacter(pattern, patternSize, badChar);
     preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
+
+    cout << "Got out!" << endl;
 
     if (isCount){
         int totalOccurrences = 0;
