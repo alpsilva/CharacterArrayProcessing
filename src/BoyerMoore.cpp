@@ -1,7 +1,6 @@
 #define ASCII 128
 
 #include <iostream>
-#include "utils.cpp"
 
 using namespace std;
 

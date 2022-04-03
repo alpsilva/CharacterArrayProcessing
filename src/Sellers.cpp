@@ -1,6 +1,5 @@
 
 #include <iostream>
-#include "utils.cpp"
 
 using namespace std;
 
