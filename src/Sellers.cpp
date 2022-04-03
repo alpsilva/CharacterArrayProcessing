@@ -63,14 +63,8 @@ int countSellers(string pattern, string text, int maximumError){
 
     const int patternSize = pattern.size() + 1;
     const int textSize = text.size() + 1;
-
-    int matrix[patternSize][textSize];
-
-    for (int i = 0; i < patternSize; i++){
-        for (int j = 0; j < textSize; j++){
-            matrix[i][j] = 0;
-        }
-    }
+    // Initializes the matrix with all elements being zero.
+    vector<vector<int>> matrix(patternSize, vector<int>(textSize, 0));
 
     // An empty pattern can be transformed into any text preffix by adding all the characters.
     for (int i = 1; i < patternSize; i++){
