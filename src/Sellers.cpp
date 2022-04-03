@@ -200,7 +200,7 @@ void searchSellers(string pattern, vector<string> textList, int maximumError, bo
         for (string text : textList) {
             totalOccurrences += countSellers(pattern, text, maximumError);
         }
-        cout << "The pattern occurred " << totalOccurrences << " times in the given text." << endl;
+        cout << "The pattern " << pattern << " occurred (with a maximum edit cost of " << maximumError << ") " << totalOccurrences << " times in the given text." << endl;
     
     } else {
         for (string text : textList) {
