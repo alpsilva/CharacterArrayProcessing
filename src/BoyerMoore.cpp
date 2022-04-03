@@ -55,6 +55,8 @@ void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], i
 }
 
 int countBoyerMoore(string pattern, string text){
+    // This functions returns the amount of times the pattern occurs in the text.
+    
     int totalOccurrences = 0;
 
     int patternSize = pattern.size();
@@ -106,7 +108,7 @@ int countBoyerMoore(string pattern, string text){
 }
 
 bool checkBoyerMoore(string pattern, string text){
-    // This functions returns true if the pattern occurs at least once in the line.
+    // This functions returns true if the pattern occurs at least once in the text.
     // Otherwise, returns false.
     int patternSize = pattern.size();
     int textSize = text.size();
