@@ -7,47 +7,54 @@ using namespace std;
 
 #define VERSION 0.1
 
-void parseAlgorithmName(const string& algorithmName, const vector<string>& patternList, const string& pattern, const vector<string>& text, const int eMax){
-    if(algorithmName == "shiftor"){
+void parseAlgorithmName(const string algorithmName, const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax, bool isCount){
+    
+    string treatedAlgorithmName = "";
+    // convert string to lower case
+    for (char c : algorithmName){
+        treatedAlgorithmName.push_back(tolower(c));
+    }
+
+    if(treatedAlgorithmName == "shiftor"){
         for(string pattern: patternList){
-            shiftOr(pattern, text);
+            shiftOr(pattern, textList);
         }
     }
-    else if(algorithmName == "sellers"){
+    else if(treatedAlgorithmName == "sellers"){
         for(string pattern: patternList){
-            //sellers
+            searchSellers(pattern, textList, eMax, isCount);
         }
     }
-    else if(algorithmName == "booyer"){
+    else if(treatedAlgorithmName == "boyermoore"){
         for(string pattern: patternList){
-            //booyer
+            searchBoyerMoore(pattern, textList, isCount);
         }
     }
-    else if(algorithmName == "wumanber"){
+    else if(treatedAlgorithmName == "wumanber"){
 
     }
     else{
-        cout << "please provide an existent algorithm." << endl;
+        cout << "please provide one of these algorithms: BoyerMoore, ShiftOr, Sellers, WuManber." << endl;
         exit(0);
     }
 }
 
-void chooseExactAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& text){
+void chooseExactAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, bool isCount){
     for (string pattern : patternList){
         if (pattern.size() <= 8){
-            shiftOr(pattern, text);
+            shiftOr(pattern, textList);
         } else {
-            // user BoyerMoore
+            searchBoyerMoore(pattern, textList, isCount);
         }
     }
 }
 
-void chooseApproximateAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax){
+void chooseApproximateAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax, bool isCount){
     for (string p : patternList){
         if (p.size() <= 8){
             // Use wumanber
         } else {
-            // user sellers
+            searchSellers(pattern, textList, eMax, isCount);
         }
     }
 
@@ -116,13 +123,13 @@ int main(int argc, char *argv[]){
     vector<string> textList = readStringFromFile(textFile.data());
 
     if (algorithmName.size() > 0){
-        parseAlgorithmName(algorithmName, patternList, pattern, textList, eMax);
+        parseAlgorithmName(algorithmName, patternList, pattern, textList, eMax, isCount);
     } else {
         // Choose the best algo
         if (eMax > 0){
-            chooseApproximateAlgorithm(patternList, pattern, textList, eMax);
+            chooseApproximateAlgorithm(patternList, pattern, textList, eMax, isCount);
         } else {
-            chooseExactAlgorithm(patternList, pattern, textList);         
+            chooseExactAlgorithm(patternList, pattern, textList, isCount);         
         }
     }
 
