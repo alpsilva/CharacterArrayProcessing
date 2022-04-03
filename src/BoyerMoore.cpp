@@ -1,7 +1,6 @@
 #define ASCII 128
 
 #include <iostream>
-#include "utils.cpp"
 
 using namespace std;
 
@@ -54,7 +53,8 @@ void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], i
     }
 }
 
-int searchBoyerMoore(string pattern, string text){
+int countBoyerMoore(string pattern, string text){
+    // This functions returns the amount of times the pattern occurs in the text.
     
     int totalOccurrences = 0;
 
@@ -80,9 +80,6 @@ int searchBoyerMoore(string pattern, string text){
 
         // If the patternIndex became less than 0, then a match occurred in the current window.
         if (patternIndex < 0){
-            // TODO: Instead of printing this position, just mark the line as having an occurrence and print it after.
-            cout << "pattern occurs at position = " << windowIndex << endl;
-
             totalOccurrences += 1;
 
             int possibleIndexJump = windowIndex + patternSize;
@@ -107,28 +104,61 @@ int searchBoyerMoore(string pattern, string text){
     }
 
     return totalOccurrences;
-
 }
 
-// TODO: Instead of printing the position of the text where the pattern occurred,
-// Print the whole line where it occurred (only one time, even with multiple occurrences in the same line).
-// Also, return the total times it occurred
+bool checkBoyerMoore(string pattern, string text){
+    // This functions returns true if the pattern occurs at least once in the text.
+    // Otherwise, returns false.
+    int patternSize = pattern.size();
+    int textSize = text.size();
 
-int main(int argc, char *argv[]){
-    
-    string pattern = argv[1];
-    uint patternSize = pattern.length();
-    if(patternSize == 0){
-        cout << "Please provide a pattern." << endl;
-        return 0;
-    } else if (patternSize >= 64){
-        cout << "Pattern too long, max length is 64." << endl;
-        return 0;
+    int badChar[ASCII];
+    int goodSuffixes[patternSize];
+    int borderPosition[patternSize];
+
+    preProcessBadCharacter(pattern, patternSize, badChar);
+    preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
+
+    int windowIndex = 0;
+
+    while (windowIndex <= (textSize - patternSize)){
+        // Initialize the pattern index on the last character of the pattern.
+        int patternIndex = patternSize - 1;
+
+        while (patternIndex >= 0 && pattern[patternIndex] == text[windowIndex + patternIndex]){
+            patternIndex--;
+        }
+
+        // If the patternIndex became less than 0, then a match occurred in the current window.
+        if (patternIndex < 0){
+            return true;
+        } else {
+            char c = text[windowIndex + patternIndex];
+            int indexJump = patternIndex - badChar[(int) c];
+            int goodSuffixJump = goodSuffixes[patternIndex];
+            // If the last occurrence of the bad character is on the right of the current character, it will cause a negative jump.
+            // Because of this, we take the max between the jump and 1.
+            // Plus, we use both heuristics to choose the max possible jump
+            windowIndex += max(goodSuffixJump, max(1, indexJump));
+        }
     }
 
-    string text = readStringFromFile(argv[2]);
+    return false;
+}
 
-    int totalOccurrences = searchBoyerMoore(pattern, text);
-    cout << "Total Occurrences of the supplied pattern in the text: " << totalOccurrences << endl;
-    
+void searchBoyerMoore(string pattern, vector<string> textList, bool isCount){
+    // Wrapper function that calls the main searching ones.
+    if (isCount){
+        int totalOccurrences = 0;
+        for (string text : textList) {
+            totalOccurrences += countBoyerMoore(pattern, text);
+        }
+        cout << "The pattern occurred " << totalOccurrences << " times in the given text." << endl;
+    } else {
+        for (string text : textList) {
+            if(checkBoyerMoore(pattern, text)){
+                cout << text << endl;
+            }
+        }
+    }
 }
