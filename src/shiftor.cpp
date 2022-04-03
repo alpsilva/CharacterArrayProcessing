@@ -7,9 +7,9 @@
 using namespace std;
 
 
-void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], bool isCount){
+void stringSearch(const string& prefix, uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], bool isCount){
     uint64_t mask = UINT64_MAX;
-    uint64_t count = 0;
+    uint64_t totalOccurrences = 0;
 
     uint64_t vectorLength = text.size();
     const uint64_t bitMaskMSB = 1 << mostSignificantBit;
@@ -22,7 +22,7 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
         for(uint64_t i = 0; i < textLen; i++){
             mask = (mask << 1) | charMask[text[lineCount][i]];
             if(!(mask & bitMaskMSB)){
-                count++;
+                totalOccurrences++;
                 found = true;
             }
         }
@@ -32,7 +32,7 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
     }
     
     if(isCount){
-        cout << "number of ocurrences is: " << count << endl;
+        cout << "The pattern " << prefix << " occurred " << totalOccurrences << " times in the given text." << endl;
     } else {
         for(uint64_t line: lineOcurrences){
             cout << text[line] << endl;
@@ -47,5 +47,5 @@ void shiftOr(const string& prefix, const vector<string>& text, bool isCount){
     }
     uint64_t charMask[ASCII];
     preProcessCharMask(prefix, prefixLen, charMask);
-    stringSearch(prefixLen-1, text, charMask, isCount);
+    stringSearch(prefix, prefixLen-1, text, charMask, isCount);
 }

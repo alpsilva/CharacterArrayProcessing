@@ -16,10 +16,10 @@ void preProcessErrorMask(uint16_t maxDist, vector<uint64_t>& errorMask)
     }
 }
 
-void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], 
+void stringSearch(const string& prefix, uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII], 
     vector<uint64_t> errorMask, const int maxDist, const bool isCount)
 {
-    uint64_t count = 0;
+    uint64_t totalOccurrences = 0;
 
     uint64_t vectorLength = text.size();
     const uint64_t bitMaskMSB = 1 << mostSignificantBit;
@@ -44,7 +44,7 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
             errorMask.swap(tempErrorMask);
             if(!(errorMask[maxDist] & bitMaskMSB))
             {
-                count++;
+                totalOccurrences++;
                 found = true;
             }
         }
@@ -55,7 +55,7 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
     }
 
     if(isCount){
-        cout << "number of ocurrences is: " << count << endl;
+        cout << "The pattern " << prefix << " occurred (with a maximum edit cost of " << maxDist << ") " << totalOccurrences << " times in the given text." << endl;
     } else {
         for(uint64_t line: lineOcurrences){
             cout << text[line] << endl;
@@ -78,6 +78,6 @@ void wuManber(const string& prefix, const vector<string>& text, const int eMax, 
     const int maxDist = eMax;
     preProcessErrorMask(maxDist, errorMask);
 
-    stringSearch(prefixLen-1, text, charMask, errorMask, maxDist, isCount);
+    stringSearch(prefix , prefixLen-1, text, charMask, errorMask, maxDist, isCount);
 }
 
