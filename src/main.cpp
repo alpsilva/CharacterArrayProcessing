@@ -1,5 +1,4 @@
 #include <iostream>
-#include <list>
 #include "BoyerMoore.cpp"
 #include "shiftOr.cpp"
 #include "Sellers.cpp"
@@ -7,6 +6,52 @@
 using namespace std;
 
 #define VERSION 0.1
+
+void parseAlgorithmName(const string& algorithmName, const vector<string>& patternList, const string& pattern, const vector<string>& text, const int eMax){
+    if(algorithmName == "shiftor"){
+        for(string pattern: patternList){
+            shiftOr(pattern, text);
+        }
+    }
+    else if(algorithmName == "sellers"){
+        for(string pattern: patternList){
+            //sellers
+        }
+    }
+    else if(algorithmName == "booyer"){
+        for(string pattern: patternList){
+            //booyer
+        }
+    }
+    else if(algorithmName == "wumanber"){
+
+    }
+    else{
+        cout << "please provide an existent algorithm." << endl;
+        exit(0);
+    }
+}
+
+void chooseExactAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& text){
+    for (string pattern : patternList){
+        if (pattern.size() <= 8){
+            shiftOr(pattern, text);
+        } else {
+            // user BoyerMoore
+        }
+    }
+}
+
+void chooseApproximateAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax){
+    for (string p : patternList){
+        if (p.size() <= 8){
+            // Use wumanber
+        } else {
+            // user sellers
+        }
+    }
+
+}
 
 int main(int argc, char *argv[]){
     // TODO: Create the help text.
@@ -16,7 +61,7 @@ int main(int argc, char *argv[]){
     string textFile = "";
     
     // Optional
-    string eMax = 0;
+    int eMax = 0;
     string patternFile = "";
     string algorithmName = "";
     bool isCount = false;
@@ -44,9 +89,9 @@ int main(int argc, char *argv[]){
             } else if (arg == "-c" || arg == "--count") {
                 isCount = true;
             } else if (arg == "-h" || arg == "--help") {
-                isCount = true;
+                asked_help = true;
             } else if (arg == "-v" || arg == "--version") {
-                isCount = true;
+                asked_version = true;
             } else {
                 cout << "Option does not exist: " << arg << endl;
                 return 0;
@@ -62,36 +107,22 @@ int main(int argc, char *argv[]){
     if (asked_version){
         cout << "PMT by André Luiz, Lucas Vinicius.\nVersion: " << VERSION << endl;
     }
-    list<string> patternList;
+    vector<string> patternList;
     if (patternFile.size() > 0){
-        patternList = readStringFromFile(patternFile);
+        patternList = readStringFromFile(patternFile.data());
     } else {
         patternList.push_back(pattern);
     }
-    list<string> textList = readStringFromFile(textFile);
+    vector<string> textList = readStringFromFile(textFile.data());
 
     if (algorithmName.size() > 0){
-        // use the given algo
+        parseAlgorithmName(algorithmName, patternList, pattern, textList, eMax);
     } else {
         // Choose the best algo
         if (eMax > 0){
-            // Aproximate matching
-            for (string p : patternList){
-                 for (string t : textList){
-                     
-                 }
-            }
+            chooseApproximateAlgorithm(patternList, pattern, textList, eMax);
         } else {
-            // Exact matching
-            for (string p : patternList){
-                 for (string t : textList){
-                     if (p.size() <= 8){
-                         // Use ShiftOr
-                     } else {
-                         // user BoyerMoore
-                     }
-                 }
-            }
+            chooseExactAlgorithm(patternList, pattern, textList);         
         }
     }
 

@@ -127,7 +127,7 @@ int searchSellers(string pattern, string text, int maximumError){
     return totalOccurrences;
 }
 
-int main(){
+int sellers(){
     int maximumError = 2;
 
     // string text = "kitten";

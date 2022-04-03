@@ -114,7 +114,7 @@ int searchBoyerMoore(string pattern, string text){
 // Print the whole line where it occurred (only one time, even with multiple occurrences in the same line).
 // Also, return the total times it occurred
 
-int main(int argc, char *argv[]){
+int booyerMoore(int argc, char *argv[]){
     
     string pattern = argv[1];
     uint patternSize = pattern.length();

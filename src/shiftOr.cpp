@@ -15,7 +15,7 @@ void fillCharMask(uint64_t charMask[ASCII])
     }
 }
 
-void preProcess(const string& prefix, uint prefixLen, uint64_t charMask[ASCII])
+void preProcess(const string& prefix, uint64_t prefixLen, uint64_t charMask[ASCII])
 {
     fillCharMask(charMask);
 
@@ -25,7 +25,7 @@ void preProcess(const string& prefix, uint prefixLen, uint64_t charMask[ASCII])
     }
 }
 
-void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII])
+void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint64_t charMask[ASCII])
 {
     uint64_t mask = UINT64_MAX;
     uint64_t count = 0;
@@ -36,7 +36,7 @@ void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t 
     for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
     {
         bool found = false;
-        const uint textLen = text[lineCount].length();
+        const uint64_t textLen = text[lineCount].length();
         for(uint64_t i = 0; i < textLen; i++)
         {
             mask = (mask << 1) | charMask[text[lineCount][i]];
@@ -52,25 +52,14 @@ void stringSearch(uint mostSignificantBit, const vector<string>& text, uint64_t 
     cout << "number of ocurrences is: " << count << endl;
 }
 
-int main(int argc, char *argv[])
+int shiftOr(const string& prefix, const vector<string>& text)
 {
-    string prefix = argv[1];
-    uint prefixLen = prefix.length();
-    if(prefixLen == 0)
+    uint64_t prefixLen = prefix.length();
+    if(prefixLen > 8)
     {
-        cout << "Please provide a pattern." << endl;
-        return 0;
+        cout << "Pattern too long, max efficient length is 8." << endl;
     }
-
-    vector<string> text = readStringFromFile(argv[2]);
-    if(prefixLen >= 64)
-    {
-        cout << "Pattern too long, max length is 64." << endl;
-    }
-
-
     uint64_t charMask[ASCII];
     preProcess(prefix, prefixLen, charMask);
-
     stringSearch(prefixLen-1, text, charMask);
 }
