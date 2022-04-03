@@ -31,7 +31,7 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
     uint64_t count = 0;
 
     uint64_t vectorLength = text.size();
-    uint64_t bitMaskMSB = 1 << mostSignificantBit;
+    const uint64_t bitMaskMSB = 1 << mostSignificantBit;
     
     for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
     {
@@ -46,7 +46,10 @@ void stringSearch(uint64_t mostSignificantBit, const vector<string>& text, uint6
                 found = true;
             }
         }
-
+        if(found)
+        {
+            cout << "found ocurrence at line: " << lineCount << endl;
+        }
     }
     
     cout << "number of ocurrences is: " << count << endl;
