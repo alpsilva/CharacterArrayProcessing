@@ -8,32 +8,43 @@ using namespace std;
 
 #define VERSION 0.1
 
-void parseAlgorithmName(const string algorithmName, const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax, bool isCount){
+void parseAlgorithmName(const string algorithmName, const vector<string>& patternList, const vector<string>& textList, const int eMax, bool isCount){
     
     string treatedAlgorithmName = "";
     // convert string to lower case
     for (char c : algorithmName){
         treatedAlgorithmName.push_back(tolower(c));
     }
-    cout << treatedAlgorithmName << endl;
+
     if(treatedAlgorithmName == "shiftor"){
-        for(string pattern: patternList){
+        for(string pattern : patternList){
             shiftOr(pattern, textList, isCount);
         }
     }
     else if(treatedAlgorithmName == "sellers"){
-        for(string pattern: patternList){
-            searchSellers(pattern, textList, eMax, isCount);
+        if (eMax > 0){
+            for(string pattern : patternList){
+                searchSellers(pattern, textList, eMax, isCount);
+            }
+        } else {
+            cout << "To use the approximate matching algorithms, you need to specify a maximum edit cost with \"-e INT or --edit INT\"." << endl;
         }
+
     }
     else if(treatedAlgorithmName == "boyermoore"){
-        for(string pattern: patternList){
+        for(string pattern : patternList){
+            cout << pattern << endl;
             searchBoyerMoore(pattern, textList, isCount);
+            cout << "finished the previous" << endl;
         }
     }
     else if(treatedAlgorithmName == "wumanber"){
-        for(string pattern: patternList){
-            wuManber(pattern, textList, eMax, isCount);
+        if (eMax > 0){
+            for(string pattern : patternList){
+                wuManber(pattern, textList, eMax, isCount);
+            }
+        } else {
+            cout << "To use the approximate matching algorithms, you need to specify a maximum edit cost with \"-e INT or --edit INT\"." << endl;
         }
     }
     else{
@@ -42,7 +53,7 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
     }
 }
 
-void chooseExactAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, bool isCount){
+void chooseExactAlgorithm(const vector<string>& patternList, const vector<string>& textList, bool isCount){
     for (string pattern : patternList){
         if (pattern.size() <= 8){
             shiftOr(pattern, textList, isCount);
@@ -52,9 +63,9 @@ void chooseExactAlgorithm(const vector<string>& patternList, const string& patte
     }
 }
 
-void chooseApproximateAlgorithm(const vector<string>& patternList, const string& pattern, const vector<string>& textList, const int eMax, bool isCount){
-    for (string p : patternList){
-        if (p.size() <= 8){
+void chooseApproximateAlgorithm(const vector<string>& patternList, const vector<string>& textList, const int eMax, bool isCount){
+    for (string pattern : patternList){
+        if (pattern.size() <= 8){
             // Use wumanber
         } else {
             searchSellers(pattern, textList, eMax, isCount);
@@ -77,39 +88,48 @@ int main(int argc, char *argv[]){
     bool isCount = false;
     bool asked_help = false;
     bool asked_version = false;
+    bool providedPatternFile = false;
 
     if (argc < 3) {
         cout << "You have to provide at least a pattern and a text file." << endl;
         return 0;
     }
-    for (int i = 1; i < argc; i++){
-        int test = (argc-2);
-        if (i == (argc - 2)){
-            // TODO: This may break the code if no pattern is passed
-            pattern = argv[i++];
-            textFile = argv[i++];
+
+    int optionalArgs = argc - 2;
+    for (int i = 1; i < optionalArgs; i++){
+        string arg = argv[i];
+        if (arg == "-e" || arg == "--edit"){
+            eMax = stoi(argv[++i]);
+        } else if (arg == "-p" || arg == "--pattern") {
+            patternFile = argv[++i];
+            providedPatternFile = true;
+            optionalArgs++;
+        } else if (arg == "-a" || arg == "--algorithm") {
+            algorithmName = argv[++i];
+        } else if (arg == "-c" || arg == "--count") {
+            isCount = true;
+        } else if (arg == "-h" || arg == "--help") {
+            asked_help = true;
+        } else if (arg == "-v" || arg == "--version") {
+            asked_version = true;
         } else {
-            string arg = argv[i];
-            if (arg == "-e" || arg == "--edit"){
-                eMax = stoi(argv[++i]);
-            } else if (arg == "-p" || arg == "--pattern") {
-                patternFile = argv[++i];
-            } else if (arg == "-a" || arg == "--algorithm") {
-                algorithmName = argv[++i];
-            } else if (arg == "-c" || arg == "--count") {
-                isCount = true;
-            } else if (arg == "-h" || arg == "--help") {
-                asked_help = true;
-            } else if (arg == "-v" || arg == "--version") {
-                asked_version = true;
-            } else {
-                cout << "Option does not exist: " << arg << endl;
-                return 0;
-            }
+            cout << "Option does not exist: " << arg << endl;
+            return 0;
         }
-
-
     }
+    textFile = argv[argc-1];
+    if (!providedPatternFile){
+        pattern = argv[argc-2];
+    }
+    
+    // Debugging
+    // cout << "Params" << endl;
+    // cout << "pattern: " << pattern << endl;
+    // cout << "patternFile: " << patternFile << endl;
+    // cout << "textFile: " << textFile << endl;
+    // cout << "editCost: " << eMax << endl;
+    // cout << "count: " << isCount << endl;
+    // cout << "algorithmName: " << algorithmName << endl;
 
     if (asked_help){
         cout << helpText << endl;
@@ -126,15 +146,16 @@ int main(int argc, char *argv[]){
     vector<string> textList = readStringFromFile(textFile.data());
 
     if (algorithmName.size() > 0){
-        parseAlgorithmName(algorithmName, patternList, pattern, textList, eMax, isCount);
+        parseAlgorithmName(algorithmName, patternList, textList, eMax, isCount);
     } else {
         // Choose the best algo
         if (eMax > 0){
-            chooseApproximateAlgorithm(patternList, pattern, textList, eMax, isCount);
+            chooseApproximateAlgorithm(patternList, textList, eMax, isCount);
         } else {
-            chooseExactAlgorithm(patternList, pattern, textList, isCount);         
+            chooseExactAlgorithm(patternList, textList, isCount);         
         }
     }
+
 
 
     /*

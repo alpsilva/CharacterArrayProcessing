@@ -52,21 +52,13 @@ void preProcessGoodSuffix(const string& pattern, int patternSize, vector<int> go
     }
 }
 
-int countBoyerMoore(const string& pattern, const string& text){
+int countBoyerMoore(const string& pattern, const string& text, int badChar[], vector<int> goodSuffixes, vector<int> borderPosition){
     // This functions returns the amount of times the pattern occurs in the text.
     
     int totalOccurrences = 0;
 
     int patternSize = pattern.size();
     int textSize = text.size();
-
-    int badChar[ASCII];
-    vector<int> goodSuffixes(patternSize);
-
-    vector<int> borderPosition(patternSize);
-
-    preProcessBadCharacter(pattern, patternSize, badChar);
-    preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
 
     int windowIndex = 0;
 
@@ -106,19 +98,11 @@ int countBoyerMoore(const string& pattern, const string& text){
     return totalOccurrences;
 }
 
-bool checkBoyerMoore(const string& pattern, const string& text){
+bool checkBoyerMoore(const string& pattern, const string& text, int badChar[], vector<int> goodSuffixes, vector<int> borderPosition){
     // This functions returns true if the pattern occurs at least once in the text.
     // Otherwise, returns false.
     int patternSize = pattern.size();
     int textSize = text.size();
-
-    int badChar[ASCII];
-    vector<int> goodSuffixes(patternSize);
-
-    vector<int> borderPosition(patternSize);
-
-    preProcessBadCharacter(pattern, patternSize, badChar);
-    preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
 
     int windowIndex = 0;
 
@@ -149,15 +133,24 @@ bool checkBoyerMoore(const string& pattern, const string& text){
 
 void searchBoyerMoore(const string& pattern, const vector<string>& textList, bool isCount){
     // Wrapper function that calls the main searching ones.
+    int patternSize = pattern.size();
+
+    int badChar[ASCII];
+    vector<int> goodSuffixes(patternSize);
+    vector<int> borderPosition(patternSize);
+
+    preProcessBadCharacter(pattern, patternSize, badChar);
+    preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
+
     if (isCount){
         int totalOccurrences = 0;
         for (string text : textList) {
-            totalOccurrences += countBoyerMoore(pattern, text);
+            totalOccurrences += countBoyerMoore(pattern, text, badChar, goodSuffixes, borderPosition);
         }
         cout << "The pattern " << pattern << " occurred " << totalOccurrences << " times in the given text." << endl;
     } else {
         for (string text : textList) {
-            if(checkBoyerMoore(pattern, text)){
+            if(checkBoyerMoore(pattern, text, badChar, goodSuffixes, borderPosition)){
                 cout << text << endl;
             }
         }
