@@ -129,13 +129,8 @@ bool checkSellers(string pattern, string text, int maximumError){
     const int patternSize = pattern.size() + 1;
     const int textSize = text.size() + 1;
 
-    int matrix[patternSize][textSize];
-
-    for (int i = 0; i < patternSize; i++){
-        for (int j = 0; j < textSize; j++){
-            matrix[i][j] = 0;
-        }
-    }
+    // Initializes the matrix with all elements being zero.
+    vector<vector<int>> matrix(patternSize, vector<int>(textSize, 0));
 
     // An empty pattern can be transformed into any text preffix by adding all the characters.
     for (int i = 1; i < patternSize; i++){
@@ -193,7 +188,7 @@ bool checkSellers(string pattern, string text, int maximumError){
     return false;
 }
 
-void searchSellers(string pattern, vector<string> textList, int maximumError, bool isCount){
+void searchSellers(string pattern, vector<string> textList, int maximumError, bool isCount, bool isCountLines){
     // Wrapper function that calls the main searching ones.
     if (isCount){
         int totalOccurrences = 0;
@@ -202,6 +197,14 @@ void searchSellers(string pattern, vector<string> textList, int maximumError, bo
         }
         cout << "The pattern " << pattern << " occurred (with a maximum edit cost of " << maximumError << ") " << totalOccurrences << " times in the given text." << endl;
     
+    } else if (isCountLines){
+        int totalLineOccurrences = 0;
+        for (string text : textList) {
+            if(checkSellers(pattern, text, maximumError)){
+                totalLineOccurrences += 1;
+            }
+        }
+        cout << "The pattern " << pattern << " occurred (with a maximum edit cost of " << maximumError << ") in " << totalLineOccurrences << " lines of the given text." << endl;
     } else {
         for (string text : textList) {
             if(checkSellers(pattern, text, maximumError)){
