@@ -3,7 +3,7 @@
 #define ASCII 128
 using namespace std;
 
-void preProcessBadCharacter(string pattern, int patternSize, int badChar[]){
+void preProcessBadCharacter(const string& pattern, int patternSize, int badChar[]){
     for (int i = 0; i < ASCII; i++){
         badChar[i] = -1;
     }
@@ -17,11 +17,11 @@ void preProcessBadCharacter(string pattern, int patternSize, int badChar[]){
     */
     for (int i = 0; i < patternSize; i++){
         char c = pattern[i];
-        badChar[(int) c] = i;
+        badChar[c] = i;
     }
 }
 
-void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], int borderPosition[]){
+void preProcessGoodSuffix(const string& pattern, int patternSize, vector<int> goodSuffixes, vector<int> borderPosition){
 
     for (int i = 0; i < patternSize; i++){
         goodSuffixes[i] = 0;
@@ -52,7 +52,7 @@ void preProcessGoodSuffix(string pattern, int patternSize, int goodSuffixes[], i
     }
 }
 
-int countBoyerMoore(string pattern, string text){
+int countBoyerMoore(const string& pattern, const string& text){
     // This functions returns the amount of times the pattern occurs in the text.
     
     int totalOccurrences = 0;
@@ -61,8 +61,9 @@ int countBoyerMoore(string pattern, string text){
     int textSize = text.size();
 
     int badChar[ASCII];
-    int goodSuffixes[patternSize];
-    int borderPosition[patternSize];
+    vector<int> goodSuffixes(patternSize);
+
+    vector<int> borderPosition(patternSize);
 
     preProcessBadCharacter(pattern, patternSize, badChar);
     preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
@@ -105,15 +106,16 @@ int countBoyerMoore(string pattern, string text){
     return totalOccurrences;
 }
 
-bool checkBoyerMoore(string pattern, string text){
+bool checkBoyerMoore(const string& pattern, const string& text){
     // This functions returns true if the pattern occurs at least once in the text.
     // Otherwise, returns false.
     int patternSize = pattern.size();
     int textSize = text.size();
 
     int badChar[ASCII];
-    int goodSuffixes[patternSize];
-    int borderPosition[patternSize];
+    vector<int> goodSuffixes(patternSize);
+
+    vector<int> borderPosition(patternSize);
 
     preProcessBadCharacter(pattern, patternSize, badChar);
     preProcessGoodSuffix(pattern, patternSize, goodSuffixes, borderPosition);
@@ -145,7 +147,7 @@ bool checkBoyerMoore(string pattern, string text){
     return false;
 }
 
-void searchBoyerMoore(string pattern, vector<string> textList, bool isCount){
+void searchBoyerMoore(const string& pattern, const vector<string>& textList, bool isCount){
     // Wrapper function that calls the main searching ones.
     if (isCount){
         int totalOccurrences = 0;
