@@ -26,29 +26,27 @@ void stringSearch(const string& prefix, uint64_t mostSignificantBit, const vecto
 
     vector<uint64_t> lineOcurrences;
     
-    for(uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
+    for (uint64_t lineCount = 0; lineCount < vectorLength; lineCount++)
     {
         bool found = false;
         const uint64_t textLen = text[lineCount].length();
-        for(uint64_t i = 0; i < textLen; i++)
+        for (uint64_t i = 0; i < textLen; i++)
         {
-            vector<uint64_t> tempErrorMask;
-            uint64_t temp = (errorMask[0] << 1) | charMask[text[lineCount][i]];
-            tempErrorMask.push_back(temp);
-            for(int q = 1; q <= maxDist; q++)
+            vector<uint64_t> tempErrorMask(maxDist+1);
+            tempErrorMask[0] = (errorMask[0] << 1) | charMask[text[lineCount][i]];
+            for (int q = 1; q <= maxDist; q++)
             {
-                temp = ((errorMask[q] << 1) | charMask[text[lineCount][i]]) & (errorMask[q-1] << 1) 
-                    & (tempErrorMask[q-1] << 1) & errorMask[q-1];
-                tempErrorMask.push_back(temp);
+                tempErrorMask[q] = ((errorMask[q] << 1) | charMask[text[lineCount][i]]) & (errorMask[q - 1] << 1)
+                    & (tempErrorMask[q - 1] << 1) & errorMask[q - 1];
             }
             errorMask.swap(tempErrorMask);
-            if(!(errorMask[maxDist] & bitMaskMSB))
+            if (!(errorMask[maxDist] & bitMaskMSB))
             {
                 totalOccurrences++;
                 found = true;
             }
         }
-        if(found)
+        if (found)
         {
             lineOcurrences.push_back(lineCount);
         }
