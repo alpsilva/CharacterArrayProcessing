@@ -153,10 +153,12 @@ void searchBoyerMoore(const string& pattern, const vector<string>& textList, boo
         }
         cout << "The pattern " << pattern << " occurred in " << totalLineOccurrences << " lines of the given text." << endl;
     } else {
+        int lineNum = 1;
         for (string text : textList) {
             if(checkBoyerMoore(pattern, text, badChar, goodSuffixes, borderPosition)){
-                cout << text << endl;
+                cout << lineNum << " - " << text << endl;
             }
+            lineNum++;
         }
     }
 }

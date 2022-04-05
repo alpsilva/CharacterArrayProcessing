@@ -206,10 +206,12 @@ void searchSellers(string pattern, vector<string> textList, int maximumError, bo
         }
         cout << "The pattern " << pattern << " occurred (with a maximum edit cost of " << maximumError << ") in " << totalLineOccurrences << " lines of the given text." << endl;
     } else {
+        int lineNum = 1;
         for (string text : textList) {
             if(checkSellers(pattern, text, maximumError)){
-                cout << text << endl;
+                cout << lineNum << " - " << text << endl;
             }
+            lineNum++;
         }
     }
 }
