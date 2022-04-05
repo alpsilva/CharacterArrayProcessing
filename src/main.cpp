@@ -4,6 +4,8 @@
 #include "Sellers.cpp"
 #include "wuManber.cpp"
 
+
+
 using namespace std;
 
 #define VERSION 0.1
@@ -76,8 +78,9 @@ void chooseApproximateAlgorithm(const vector<string>& patternList, const vector<
             searchSellers(pattern, textList, eMax, isCount, isCountLines);
         }
     }
-
 }
+
+
 
 int main(int argc, char *argv[]){
     string helpText = R"(
@@ -126,7 +129,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
     }
-
+    
     int optionalArgs = argc - 2;
     for (int i = 1; i < optionalArgs; i++){
         string arg = argv[i];
@@ -151,6 +154,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
     }
+
     textFile = argv[argc-1];
     if (!providedPatternFile){
         pattern = argv[argc-2];
@@ -177,20 +181,46 @@ int main(int argc, char *argv[]){
     } else {
         patternList.push_back(pattern);
     }
-    vector<string> textList = readStringFromFile(textFile.data());
 
-    if (algorithmName.size() > 0){
-        parseAlgorithmName(algorithmName, patternList, textList, eMax, isCount, isCountLines);
-    } else {
-        // Choose the best algo
-        if (eMax > 0){
-            chooseApproximateAlgorithm(patternList, textList, eMax, isCount, isCountLines);
-        } else {
-            chooseExactAlgorithm(patternList, textList, isCount, isCountLines);         
+    
+    bool wildcardFound = false;
+    uint16_t wildcardPosition;
+    for(uint16_t i = 0; i < textFile.size(); i++){
+        if(textFile[i] == '*'){
+            wildcardPosition = i;
+            wildcardFound = true;
+            break;
         }
     }
 
-
+    if(!wildcardFound){
+        vector<string> textList = readStringFromFile(textFile.data());
+        if (algorithmName.size() > 0){
+            parseAlgorithmName(algorithmName, patternList, textList, eMax, isCount, isCountLines);
+        } else {
+            // Choose the best algo
+            if (eMax > 0){
+                chooseApproximateAlgorithm(patternList, textList, eMax, isCount, isCountLines);
+            } else {
+                chooseExactAlgorithm(patternList, textList, isCount, isCountLines);         
+            }
+        }
+    } else {
+        vector<vector<string>> textList;
+        textList = readFilesWildcard(textFile.data(), wildcardPosition, textFile.size());
+        for(vector<string> text: textList){
+            if (algorithmName.size() > 0){
+                parseAlgorithmName(algorithmName, patternList, text, eMax, isCount, isCountLines);
+            } else {
+                // Choose the best algo
+                if (eMax > 0){
+                    chooseApproximateAlgorithm(patternList, text, eMax, isCount, isCountLines);
+                } else {
+                    chooseExactAlgorithm(patternList, text, isCount, isCountLines);         
+                }
+            }
+        }
+    }
 
     /*
     Todo:
