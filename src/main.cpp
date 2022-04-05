@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
     }
-
+    
     int optionalArgs = argc - 2;
     for (int i = 1; i < optionalArgs; i++){
         string arg = argv[i];
@@ -154,6 +154,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
     }
+
     textFile = argv[argc-1];
     if (!providedPatternFile){
         pattern = argv[argc-2];
@@ -181,7 +182,7 @@ int main(int argc, char *argv[]){
         patternList.push_back(pattern);
     }
 
-    vector<vector<string>> textList;
+    
     bool wildcardFound = false;
     uint16_t wildcardPosition;
     for(uint16_t i = 0; i < textFile.size(); i++){
@@ -193,19 +194,20 @@ int main(int argc, char *argv[]){
     }
 
     if(!wildcardFound){
-        textList[0] = readStringFromFile(textFile.data());
+        vector<string> textList = readStringFromFile(textFile.data());
         if (algorithmName.size() > 0){
-            parseAlgorithmName(algorithmName, patternList, textList[0], eMax, isCount, isCountLines);
+            parseAlgorithmName(algorithmName, patternList, textList, eMax, isCount, isCountLines);
         } else {
             // Choose the best algo
             if (eMax > 0){
-                chooseApproximateAlgorithm(patternList, textList[0], eMax, isCount, isCountLines);
+                chooseApproximateAlgorithm(patternList, textList, eMax, isCount, isCountLines);
             } else {
-                chooseExactAlgorithm(patternList, textList[0], isCount, isCountLines);         
+                chooseExactAlgorithm(patternList, textList, isCount, isCountLines);         
             }
         }
     } else {
-        textList = readFilesWildcard(textFile.data(), wildcardPosition);
+        vector<vector<string>> textList;
+        textList = readFilesWildcard(textFile.data(), wildcardPosition, textFile.size());
         for(vector<string> text: textList){
             if (algorithmName.size() > 0){
                 parseAlgorithmName(algorithmName, patternList, text, eMax, isCount, isCountLines);
