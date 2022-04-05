@@ -18,7 +18,11 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
 
     if(treatedAlgorithmName == "shiftor"){
         for(string pattern : patternList){
-            shiftOr(pattern, textList, isCount/*, isCountLines*/);
+            if(pattern.size() > 64){
+                cout << "this algorithm won't to work with a pattern size of more than 64. Skipping..." << endl;
+            } else {
+                shiftOr(pattern, textList, isCount, isCountLines);
+            }      
         }
     }
     else if(treatedAlgorithmName == "sellers"){
@@ -29,7 +33,6 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
         } else {
             cout << "To use the approximate matching algorithms, you need to specify a maximum edit cost with \"-e INT or --edit INT\"." << endl;
         }
-
     }
     else if(treatedAlgorithmName == "boyermoore"){
         for(string pattern : patternList){
@@ -39,7 +42,11 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
     else if(treatedAlgorithmName == "wumanber"){
         if (eMax > 0){
             for(string pattern : patternList){
-                wuManber(pattern, textList, eMax, isCount/*, isCountLines*/);
+                if(pattern.size() > 64){
+                    cout << "this algorithm won't to work with a pattern size of more than 64. Skipping..." << endl;
+                } else {
+                    wuManber(pattern, textList, eMax, isCount, isCountLines);
+                } 
             }
         } else {
             cout << "To use the approximate matching algorithms, you need to specify a maximum edit cost with \"-e INT or --edit INT\"." << endl;
@@ -54,7 +61,7 @@ void parseAlgorithmName(const string algorithmName, const vector<string>& patter
 void chooseExactAlgorithm(const vector<string>& patternList, const vector<string>& textList, bool isCount, bool isCountLines){
     for (string pattern : patternList){
         if (pattern.size() <= 8){
-            shiftOr(pattern, textList, isCount/*, isCountLines*/);
+            shiftOr(pattern, textList, isCount, isCountLines);
         } else {
             searchBoyerMoore(pattern, textList, isCount, isCountLines);
         }
@@ -64,7 +71,7 @@ void chooseExactAlgorithm(const vector<string>& patternList, const vector<string
 void chooseApproximateAlgorithm(const vector<string>& patternList, const vector<string>& textList, const int eMax, bool isCount, bool isCountLines){
     for (string pattern : patternList){
         if (pattern.size() <= 8){
-            // Use wumanber
+            wuManber(pattern, textList, eMax, isCount, isCountLines);
         } else {
             searchSellers(pattern, textList, eMax, isCount, isCountLines);
         }
