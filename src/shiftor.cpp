@@ -52,10 +52,10 @@ void stringSearch(const string& prefix, uint64_t mostSignificantBit, const vecto
     if(isLineCount){
         cout << "The pattern " << prefix << " was found in " << lineOcurrences.size() << " lines in the given text." << endl;
         return;
-    } 
-
-    for(uint64_t line: lineOcurrences){
-        cout << line + 1 << " - " << text[line] << endl;
+    } else {
+        for(uint64_t line: lineOcurrences){
+            cout << line + 1 << " - " << text[line] << endl;
+        }
     }
 }
 

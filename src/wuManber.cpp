@@ -78,11 +78,11 @@ void stringSearch(const string& prefix, uint64_t mostSignificantBit, const vecto
     if (isCountLines) {
         cout << "The pattern " << prefix << " (with a maximum edit cost of " << maxDist << ") was found in " << lineOcurrences.size() << " lines in the given text." << endl;
         return;
+    } else {
+        for(uint64_t line: lineOcurrences){
+            cout << line + 1 << " - " << text[line] << endl;
+        } 
     }
-
-    for(uint64_t line: lineOcurrences){
-        cout << line + 1 << " - " << text[line] << endl;
-    } 
 }
 
 void wuManber(const string& prefix, const vector<string>& text, const int eMax, const bool isCount, const bool isLineCount)
